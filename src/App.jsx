@@ -3,6 +3,7 @@ import { img } from './data/images.js';
 
 const WHATSAPP_NUMBER = '+2348130987906';
 const FEATURED_NAME = 'TEÁH Hobo Crescent Bag';
+const FEATURED_PRICES = { S: 'NGN 15,000', M: 'NGN 18,000', L: 'NGN 25,000' };
 const SIZE_LIST = ['S', 'M', 'L'];
 
 const PALETTE = [
@@ -23,6 +24,7 @@ const PRODUCTS = [
     slot: 'p4',
     name: 'TEÁH East West Shoulder Bag',
     desc: 'A low, wide shoulder shape that sits close and keeps the look sharp.',
+    price: 'NGN 35,000',
     hasSizes: false,
   },
   {
@@ -162,11 +164,13 @@ export default function App() {
 
   const fIdx = idxFor('featured');
   const activeColor = PALETTE[fIdx];
+  const featuredSize = sizeOf('featured');
+  const featuredPrice = FEATURED_PRICES[featuredSize] ?? FEATURED_PRICES.M;
 
   const cartMsg = cart.length
     ? `Hi TEÁH Studios! I would like to order:\n${cart
         .map((c, i) =>
-          `${i + 1}. ${c.name} - Colour: ${c.color}${c.size ? ` - Size: ${c.size}` : ''}`,
+          `${i + 1}. ${c.name} - Colour: ${c.color}${c.size ? ` - Size: ${c.size}` : ''}${c.price ? ` - Price: ${c.price}` : ''}`,
         )
         .join('\n')}\n\nPlease send me the payment details.`
     : '';
@@ -177,7 +181,7 @@ export default function App() {
         'Hi TEÁH Studios! I would like to place a custom bag order. Please send me the payment details.',
       ),
       waFeatured: waLink(
-        `Hi TEÁH Studios! I would like to order the ${FEATURED_NAME} - Colour: ${activeColor.name} - Size: ${sizeOf('featured')}. Please send me the payment details.`,
+        `Hi TEÁH Studios! I would like to order the ${FEATURED_NAME} - Colour: ${activeColor.name} - Size: ${featuredSize} - Price: ${featuredPrice}. Please send me the payment details.`,
       ),
       waCart: waLink(cartMsg),
       waTsuno: waLink(
@@ -187,13 +191,18 @@ export default function App() {
         'Hi TEÁH Studios! I would like to claim a Bespoke Season slot. Please send me the payment details.',
       ),
     }),
-    [activeColor.name, cartMsg, sizeOf],
+    [activeColor.name, cartMsg, featuredSize, featuredPrice],
   );
 
   const addFeatured = () =>
     setCart((s) => [
       ...s,
-      { name: FEATURED_NAME, color: activeColor.name, size: sizeOf('featured') },
+      {
+        name: FEATURED_NAME,
+        color: activeColor.name,
+        size: featuredSize,
+        price: featuredPrice,
+      },
     ]);
 
   const addProduct = (p) => {
@@ -519,8 +528,20 @@ export default function App() {
             padding: '0 clamp(20px, 5vw, 56px)',
           }}
         >
+          <p
+            style={{
+              margin: 0,
+              fontSize: 20,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              fontWeight: 600,
+              color: '#6E1B2F',
+            }}
+          >
+            {featuredPrice}
+          </p>
           <span style={{ fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(20,20,20,0.5)' }}>
-            Size: {sizeOf('featured')}
+            Size: {featuredSize}
           </span>
           <SizeButtons sizeKey="featured" sizes={sizes} onPick={setSize} />
         </div>
@@ -598,7 +619,7 @@ export default function App() {
                 const pIdx = idxFor(p.slot);
                 const pColor = PALETTE[pIdx];
                 const waProduct = waLink(
-                  `Hi TEÁH Studios! I would like to order the ${p.name} - Colour: ${pColor.name}${p.hasSizes ? ` - Size: ${sizeOf(p.slot)}` : ''}. Please send me the payment details.`,
+                  `Hi TEÁH Studios! I would like to order the ${p.name} - Colour: ${pColor.name}${p.hasSizes ? ` - Size: ${sizeOf(p.slot)}` : ''}${p.price ? ` - Price: ${p.price}` : ''}. Please send me the payment details.`,
                 );
                 return (
                   <article
@@ -650,6 +671,20 @@ export default function App() {
                       >
                         {p.name}
                       </h4>
+                      {p.price && (
+                        <p
+                          style={{
+                            margin: 0,
+                            fontSize: 15,
+                            letterSpacing: '0.14em',
+                            textTransform: 'uppercase',
+                            fontWeight: 500,
+                            color: '#6E1B2F',
+                          }}
+                        >
+                          {p.price}
+                        </p>
+                      )}
                       <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.7, color: 'rgba(20,20,20,0.62)', fontWeight: 300 }}>
                         {p.desc}
                       </p>
@@ -778,6 +813,7 @@ export default function App() {
                   <span style={{ fontSize: 12, color: 'rgba(20,20,20,0.55)', fontWeight: 300 }}>
                     Colour: {c.color}
                     {c.size ? ` · Size: ${c.size}` : ''}
+                    {c.price ? ` · ${c.price}` : ''}
                   </span>
                 </div>
                 <button
