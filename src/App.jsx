@@ -38,10 +38,10 @@ function waLink(msg) {
   return `https://wa.me/${n}?text=${encodeURIComponent(msg)}`;
 }
 
-function CoverImage({ src, alt }) {
+function CoverImage({ src, alt, alignRight = false }) {
   return (
     <div className="cover-wrap" style={{ position: 'absolute', inset: 0 }}>
-      <img src={src} alt={alt} />
+      <img src={src} alt={alt} className={alignRight ? 'img-right' : undefined} />
     </div>
   );
 }
@@ -77,8 +77,12 @@ function SizeButtons({ sizeKey, sizes, onPick }) {
   );
 }
 
-function ColorThumbs({ palette, activeIdx, productSlot, onPick, large }) {
-  const w = large ? 'clamp(40px, 7vw, 58px)' : 'clamp(46px, 8vw, 66px)';
+function ColorThumbs({ palette, activeIdx, productSlot, onPick, large, alignRight = false }) {
+  const w = alignRight
+    ? 'clamp(72px, 12vw, 96px)'
+    : large
+      ? 'clamp(40px, 7vw, 58px)'
+      : 'clamp(46px, 8vw, 66px)';
   const h = large ? 'clamp(50px, 8.6vw, 72px)' : 'clamp(58px, 10vw, 82px)';
 
   return (
@@ -102,7 +106,7 @@ function ColorThumbs({ palette, activeIdx, productSlot, onPick, large }) {
               outline: `1px solid ${active ? '#6E1B2F' : 'transparent'}`,
             }}
           >
-            <img src={img(key)} alt={c.name} />
+            <img src={img(key)} alt={c.name} className={alignRight ? 'img-right' : undefined} />
           </div>
         );
       })}
@@ -110,7 +114,7 @@ function ColorThumbs({ palette, activeIdx, productSlot, onPick, large }) {
   );
 }
 
-function ProductCarousel({ palette, activeIdx, productSlot, placeholderPrefix }) {
+function ProductCarousel({ palette, activeIdx, productSlot, placeholderPrefix, alignRight = false }) {
   const slideKey = (c) =>
     productSlot === 'f' || !productSlot ? c.slot : `${productSlot}-${c.name.toLowerCase()}`;
 
@@ -120,7 +124,11 @@ function ProductCarousel({ palette, activeIdx, productSlot, placeholderPrefix })
         const key = slideKey(c);
         return (
           <div key={key} className="carousel-slide">
-            <CoverImage src={img(key)} alt={`${placeholderPrefix} - ${c.name}`} />
+            <CoverImage
+              src={img(key)}
+              alt={`${placeholderPrefix} - ${c.name}`}
+              alignRight={alignRight}
+            />
           </div>
         );
       })}
@@ -613,7 +621,13 @@ export default function App() {
                         background: '#F2ECEA',
                       }}
                     >
-                      <ProductCarousel palette={PALETTE} activeIdx={pIdx} productSlot={p.slot} placeholderPrefix={p.name} />
+                      <ProductCarousel
+                        palette={PALETTE}
+                        activeIdx={pIdx}
+                        productSlot={p.slot}
+                        placeholderPrefix={p.name}
+                        alignRight={p.slot === 'p4'}
+                      />
                     </div>
                     <div
                       style={{
@@ -646,6 +660,7 @@ export default function App() {
                             activeIdx={pIdx}
                             productSlot={p.slot}
                             onPick={(i) => pick(p.slot, i)}
+                            alignRight={p.slot === 'p4'}
                           />
                         </div>
                       </div>
