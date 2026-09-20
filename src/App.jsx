@@ -3,7 +3,7 @@ import { img } from './data/images.js';
 
 const WHATSAPP_NUMBER = '+2348130987906';
 const FEATURED_NAME = 'TEÁH Hobo Crescent Bag';
-const FEATURED_PRICES = { S: 'NGN 15,000', M: 'NGN 18,000', L: 'NGN 25,000' };
+const FEATURED_PRICES = { S: 'NGN 18,000', M: 'NGN 25,000', L: 'NGN 33,000' };
 const SIZE_LIST = ['S', 'M', 'L'];
 
 const PALETTE = [
@@ -429,91 +429,83 @@ export default function App() {
           </p>
         </div>
 
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            height: 'clamp(360px, 58vw, 760px)',
-            overflow: 'hidden',
-            background: '#F2ECEA',
-          }}
-        >
-          <ProductCarousel palette={PALETTE} activeIdx={fIdx} productSlot="f" placeholderPrefix="Crescent bag" />
-          <span
-            style={{
-              position: 'absolute',
-              top: 26,
-              left: 26,
-              background: '#6E1B2F',
-              color: '#fff',
-              padding: '9px 15px',
-              fontSize: 10.5,
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              pointerEvents: 'none',
-            }}
-          >
-            Bestseller
-          </span>
-          <button
-            type="button"
-            aria-label="Previous colour"
-            className="btn-carousel"
-            onClick={() => pick('featured', (fIdx - 1 + PALETTE.length) % PALETTE.length)}
-            style={{
-              position: 'absolute',
-              left: 26,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              width: 48,
-              height: 48,
-              borderRadius: '50%',
-              cursor: 'pointer',
-              background: 'rgba(255,255,255,0.92)',
-              border: '1px solid rgba(20,20,20,0.15)',
-              color: '#141414',
-              fontSize: 17,
-            }}
-          >
-            ‹
-          </button>
-          <button
-            type="button"
-            aria-label="Next colour"
-            className="btn-carousel"
-            onClick={() => pick('featured', (fIdx + 1) % PALETTE.length)}
-            style={{
-              position: 'absolute',
-              right: 26,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              width: 48,
-              height: 48,
-              borderRadius: '50%',
-              cursor: 'pointer',
-              background: 'rgba(255,255,255,0.92)',
-              border: '1px solid rgba(20,20,20,0.15)',
-              color: '#141414',
-              fontSize: 17,
-            }}
-          >
-            ›
-          </button>
+        <div className="featured-gallery">
           <div
+            className="featured-carousel"
             style={{
-              position: 'absolute',
-              left: '50%',
-              bottom: 'clamp(14px, 2vw, 26px)',
-              transform: 'translateX(-50%)',
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
-              maxWidth: 'calc(100% - 24px)',
-              gap: 8,
-              padding: 10,
-              background: 'rgba(255,255,255,0.9)',
+              position: 'relative',
+              width: '100%',
+              height: 'clamp(360px, 58vw, 760px)',
+              overflow: 'hidden',
+              background: '#F2ECEA',
             }}
           >
+            <ProductCarousel palette={PALETTE} activeIdx={fIdx} productSlot="f" placeholderPrefix="Crescent bag" />
+            <span
+              style={{
+                position: 'absolute',
+                top: 26,
+                left: 26,
+                background: '#6E1B2F',
+                color: '#fff',
+                padding: '9px 15px',
+                fontSize: 10.5,
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                pointerEvents: 'none',
+              }}
+            >
+              Bestseller
+            </span>
+            <button
+              type="button"
+              aria-label="Previous colour"
+              className="btn-carousel featured-nav featured-nav-prev"
+              onClick={() => pick('featured', (fIdx - 1 + PALETTE.length) % PALETTE.length)}
+              style={{
+                position: 'absolute',
+                left: 26,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                cursor: 'pointer',
+                background: 'rgba(255,255,255,0.92)',
+                border: '1px solid rgba(20,20,20,0.15)',
+                color: '#141414',
+                fontSize: 17,
+              }}
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              aria-label="Next colour"
+              className="btn-carousel featured-nav featured-nav-next"
+              onClick={() => pick('featured', (fIdx + 1) % PALETTE.length)}
+              style={{
+                position: 'absolute',
+                right: 26,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                cursor: 'pointer',
+                background: 'rgba(255,255,255,0.92)',
+                border: '1px solid rgba(20,20,20,0.15)',
+                color: '#141414',
+                fontSize: 17,
+              }}
+            >
+              ›
+            </button>
+            <div className="featured-swatches featured-swatches-desktop">
+              <ColorThumbs palette={PALETTE} activeIdx={fIdx} productSlot={null} onPick={(i) => pick('featured', i)} large />
+            </div>
+          </div>
+          <div className="featured-swatches featured-swatches-mobile">
             <ColorThumbs palette={PALETTE} activeIdx={fIdx} productSlot={null} onPick={(i) => pick('featured', i)} large />
           </div>
         </div>
@@ -528,6 +520,16 @@ export default function App() {
             padding: '0 clamp(20px, 5vw, 56px)',
           }}
         >
+          <span
+            style={{
+              fontSize: 11,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: 'rgba(20,20,20,0.5)',
+            }}
+          >
+            New prices
+          </span>
           <p
             style={{
               margin: 0,
