@@ -18,6 +18,8 @@ export const IMAGES = {
   'p2-black': '/images/p2-black.webp',
   'p4-cognac': '/images/p4-cognac.webp',
   tsuno: '/images/tsuno.webp',
+  roxie: '/images/roxie.webp',
+  soleil: '/images/soleil.webp',
 };
 
 export function img(key) {

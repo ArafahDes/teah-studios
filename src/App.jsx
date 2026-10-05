@@ -35,6 +35,27 @@ const PRODUCTS = [
   },
 ];
 
+const NEW_IN = [
+  {
+    slot: 'roxie',
+    name: 'TEÁH Roxie',
+    desc: 'A rich wine-red hobo bag designed to add a bold touch to your everyday look. Finished with delicate gold eyelet details and our signature relaxed, slouchy silhouette.',
+    price: 'NGN 30,000',
+    color: 'Roxie Red',
+    image: 'roxie',
+    hasSizes: true,
+  },
+  {
+    slot: 'soleil',
+    name: 'TEÁH Soleil',
+    desc: 'A warm mustard hobo bag made for days when you want your everyday carry to make a statement. Finished with gold eyelet details and our signature soft, slouchy silhouette.',
+    price: 'NGN 30,000',
+    color: 'Soleil Mustard',
+    image: 'soleil',
+    hasSizes: true,
+  },
+];
+
 function waLink(msg) {
   const n = WHATSAPP_NUMBER.replace(/[^0-9]/g, '');
   return `https://wa.me/${n}?text=${encodeURIComponent(msg)}`;
@@ -214,6 +235,19 @@ export default function App() {
         name: p.name,
         color: pColor.name,
         size: p.hasSizes ? sizeOf(p.slot) : '',
+        price: p.price || '',
+      },
+    ]);
+  };
+
+  const addNewIn = (p) => {
+    setCart((s) => [
+      ...s,
+      {
+        name: p.name,
+        color: p.color,
+        size: p.hasSizes ? sizeOf(p.slot) : '',
+        price: p.price || '',
       },
     ]);
   };
@@ -271,6 +305,7 @@ export default function App() {
           }}
         >
           <a href="#bags" style={{ color: '#141414' }}>Bags</a>
+          <a href="#new-in" style={{ color: '#141414' }}>New In</a>
           <a href="#offer" style={{ color: '#141414' }}>Offer</a>
           <a href="#about" style={{ color: '#141414' }}>About</a>
           <a href="#contact" style={{ color: '#141414' }}>Contact</a>
@@ -592,6 +627,145 @@ export default function App() {
           >
             Order on WhatsApp
           </a>
+        </div>
+
+        {/* New In */}
+        <div id="new-in" style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(20px, 5vw, 56px)' }}>
+          <div style={{ marginTop: 'clamp(56px, 7vw, 84px)' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'baseline',
+                justifyContent: 'space-between',
+                gap: '10px 24px',
+                paddingBottom: 18,
+                borderBottom: '1px solid rgba(20,20,20,0.12)',
+                marginBottom: 40,
+              }}
+            >
+              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(26px, 4.4vw, 34px)', fontWeight: 400, margin: 0 }}>
+                New in
+              </h3>
+              <span style={{ fontSize: 11.5, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(20,20,20,0.5)' }}>
+                Just dropped
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 34 }}>
+              {NEW_IN.map((p) => {
+                const sizeLabel = sizeOf(p.slot);
+                const waProduct = waLink(
+                  `Hi TEÁH Studios! I would like to order the ${p.name} - Colour: ${p.color} - Size: ${sizeLabel} - Price: ${p.price}. Please send me the payment details.`,
+                );
+                return (
+                  <article
+                    key={p.slot}
+                    className="product-card"
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 460px), 1fr))',
+                      background: '#fff',
+                      border: '1px solid rgba(20,20,20,0.09)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: 'relative',
+                        minWidth: 0,
+                        minHeight: 0,
+                        height: 'clamp(300px, 46vw, 520px)',
+                        overflow: 'hidden',
+                        background: '#F2ECEA',
+                      }}
+                    >
+                      <CoverImage src={img(p.image)} alt={p.name} />
+                    </div>
+                    <div
+                      style={{
+                        minWidth: 0,
+                        padding: 'clamp(28px, 4vw, 48px) clamp(22px, 3.4vw, 38px)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        gap: 16,
+                      }}
+                    >
+                      <h4
+                        style={{
+                          fontFamily: "'Cormorant Garamond', serif",
+                          fontSize: 'clamp(26px, 4.4vw, 34px)',
+                          fontWeight: 400,
+                          margin: 0,
+                          lineHeight: 1.12,
+                        }}
+                      >
+                        {p.name}
+                      </h4>
+                      <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.7, color: 'rgba(20,20,20,0.62)', fontWeight: 300 }}>
+                        {p.desc}
+                      </p>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: 15,
+                          letterSpacing: '0.14em',
+                          textTransform: 'uppercase',
+                          fontWeight: 500,
+                          color: '#6E1B2F',
+                        }}
+                      >
+                        {p.price}
+                      </p>
+                      <span style={{ fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(20,20,20,0.5)' }}>
+                        Colour: {p.color}
+                      </span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 6 }}>
+                        <span style={{ fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(20,20,20,0.5)' }}>
+                          Size: {sizeLabel}
+                        </span>
+                        <SizeButtons sizeKey={p.slot} sizes={sizes} onPick={setSize} />
+                      </div>
+                      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 12 }}>
+                        <button
+                          type="button"
+                          className="btn-primary-dark"
+                          onClick={() => addNewIn(p)}
+                          style={{
+                            cursor: 'pointer',
+                            background: '#141414',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '15px 26px',
+                            fontSize: 11,
+                            letterSpacing: '0.18em',
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          Add to cart
+                        </button>
+                        <a
+                          href={waProduct}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-outline-dark"
+                          style={{
+                            border: '1px solid rgba(20,20,20,0.25)',
+                            color: '#141414',
+                            padding: '15px 26px',
+                            fontSize: 11,
+                            letterSpacing: '0.18em',
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          Order on WhatsApp
+                        </a>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         {/* Rest of collection */}
@@ -1130,6 +1304,7 @@ export default function App() {
             </span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 9, fontSize: 14, fontWeight: 300 }}>
               <a href="#bags" style={{ color: 'rgba(255,255,255,0.72)' }}>Bags</a>
+              <a href="#new-in" style={{ color: 'rgba(255,255,255,0.72)' }}>New In</a>
               <a href="#offer" style={{ color: 'rgba(255,255,255,0.72)' }}>Offer</a>
               <a href="#about" style={{ color: 'rgba(255,255,255,0.72)' }}>About</a>
               <a href={links.waGeneral} target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,255,255,0.72)' }}>
