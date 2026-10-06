@@ -39,11 +39,9 @@ const NEW_IN = [
   {
     slot: 'roxie',
     name: 'TEÁH Roxie',
-    desc: 'A rich wine-red hobo bag designed to add a bold touch to your everyday look. Finished with delicate gold eyelet details and our signature relaxed, slouchy silhouette.',
+    desc: 'A rich red hobo bag designed to add a bold touch to your everyday look. Finished with delicate gold eyelet details and our signature relaxed, slouchy silhouette.',
     price: 'NGN 30,000',
     color: 'Roxie Red',
-    image: 'roxie',
-    hasSizes: true,
   },
   {
     slot: 'soleil',
@@ -51,10 +49,13 @@ const NEW_IN = [
     desc: 'A warm mustard hobo bag made for days when you want your everyday carry to make a statement. Finished with gold eyelet details and our signature soft, slouchy silhouette.',
     price: 'NGN 30,000',
     color: 'Soleil Mustard',
-    image: 'soleil',
-    hasSizes: true,
   },
 ];
+
+const NEW_IN_PALETTE = NEW_IN.map((p) => ({
+  name: p.color,
+  slot: p.slot,
+}));
 
 function waLink(msg) {
   const n = WHATSAPP_NUMBER.replace(/[^0-9]/g, '');
@@ -187,6 +188,9 @@ export default function App() {
   const activeColor = PALETTE[fIdx];
   const featuredSize = sizeOf('featured');
   const featuredPrice = FEATURED_PRICES[featuredSize] ?? FEATURED_PRICES.M;
+  const newInIdx = Math.min(picks['new-in'] ?? 0, NEW_IN.length - 1);
+  const newInItem = NEW_IN[newInIdx];
+  const newInSize = sizeOf('new-in');
 
   const cartMsg = cart.length
     ? `Hi TEÁH Studios! I would like to order:\n${cart
@@ -240,14 +244,15 @@ export default function App() {
     ]);
   };
 
-  const addNewIn = (p) => {
+  const addNewIn = () => {
+    const item = NEW_IN[newInIdx] ?? NEW_IN[0];
     setCart((s) => [
       ...s,
       {
-        name: p.name,
-        color: p.color,
-        size: p.hasSizes ? sizeOf(p.slot) : '',
-        price: p.price || '',
+        name: item.name,
+        color: item.color,
+        size: sizeOf('new-in'),
+        price: item.price,
       },
     ]);
   };
@@ -651,120 +656,126 @@ export default function App() {
                 Just dropped
               </span>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 34 }}>
-              {NEW_IN.map((p) => {
-                const sizeLabel = sizeOf(p.slot);
-                const waProduct = waLink(
-                  `Hi TEÁH Studios! I would like to order the ${p.name} - Colour: ${p.color} - Size: ${sizeLabel} - Price: ${p.price}. Please send me the payment details.`,
-                );
-                return (
-                  <article
-                    key={p.slot}
-                    className="product-card"
+            <article
+              className="product-card"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 460px), 1fr))',
+                background: '#fff',
+                border: '1px solid rgba(20,20,20,0.09)',
+              }}
+            >
+              <div
+                style={{
+                  position: 'relative',
+                  minWidth: 0,
+                  minHeight: 0,
+                  height: 'clamp(300px, 46vw, 520px)',
+                  overflow: 'hidden',
+                  background: '#F2ECEA',
+                }}
+              >
+                <ProductCarousel
+                  palette={NEW_IN_PALETTE}
+                  activeIdx={newInIdx}
+                  productSlot={null}
+                  placeholderPrefix={newInItem.name}
+                />
+              </div>
+              <div
+                style={{
+                  minWidth: 0,
+                  padding: 'clamp(28px, 4vw, 48px) clamp(22px, 3.4vw, 38px)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  gap: 16,
+                }}
+              >
+                <h4
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: 'clamp(26px, 4.4vw, 34px)',
+                    fontWeight: 400,
+                    margin: 0,
+                    lineHeight: 1.12,
+                  }}
+                >
+                  {newInItem.name}
+                </h4>
+                <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.7, color: 'rgba(20,20,20,0.62)', fontWeight: 300 }}>
+                  {newInItem.desc}
+                </p>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 15,
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                    fontWeight: 500,
+                    color: '#6E1B2F',
+                  }}
+                >
+                  {newInItem.price}
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 6 }}>
+                  <span style={{ fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(20,20,20,0.5)' }}>
+                    Colour: {newInItem.color}
+                  </span>
+                  <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                    <ColorThumbs
+                      palette={NEW_IN_PALETTE}
+                      activeIdx={newInIdx}
+                      productSlot={null}
+                      onPick={(i) => pick('new-in', i)}
+                    />
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 6 }}>
+                  <span style={{ fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(20,20,20,0.5)' }}>
+                    Size: {newInSize}
+                  </span>
+                  <SizeButtons sizeKey="new-in" sizes={sizes} onPick={setSize} />
+                </div>
+                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 12 }}>
+                  <button
+                    type="button"
+                    className="btn-primary-dark"
+                    onClick={addNewIn}
                     style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 460px), 1fr))',
-                      background: '#fff',
-                      border: '1px solid rgba(20,20,20,0.09)',
+                      cursor: 'pointer',
+                      background: '#141414',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '15px 26px',
+                      fontSize: 11,
+                      letterSpacing: '0.18em',
+                      textTransform: 'uppercase',
                     }}
                   >
-                    <div
-                      style={{
-                        position: 'relative',
-                        minWidth: 0,
-                        minHeight: 0,
-                        height: 'clamp(300px, 46vw, 520px)',
-                        overflow: 'hidden',
-                        background: '#F2ECEA',
-                      }}
-                    >
-                      <CoverImage src={img(p.image)} alt={p.name} />
-                    </div>
-                    <div
-                      style={{
-                        minWidth: 0,
-                        padding: 'clamp(28px, 4vw, 48px) clamp(22px, 3.4vw, 38px)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        gap: 16,
-                      }}
-                    >
-                      <h4
-                        style={{
-                          fontFamily: "'Cormorant Garamond', serif",
-                          fontSize: 'clamp(26px, 4.4vw, 34px)',
-                          fontWeight: 400,
-                          margin: 0,
-                          lineHeight: 1.12,
-                        }}
-                      >
-                        {p.name}
-                      </h4>
-                      <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.7, color: 'rgba(20,20,20,0.62)', fontWeight: 300 }}>
-                        {p.desc}
-                      </p>
-                      <p
-                        style={{
-                          margin: 0,
-                          fontSize: 15,
-                          letterSpacing: '0.14em',
-                          textTransform: 'uppercase',
-                          fontWeight: 500,
-                          color: '#6E1B2F',
-                        }}
-                      >
-                        {p.price}
-                      </p>
-                      <span style={{ fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(20,20,20,0.5)' }}>
-                        Colour: {p.color}
-                      </span>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 6 }}>
-                        <span style={{ fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(20,20,20,0.5)' }}>
-                          Size: {sizeLabel}
-                        </span>
-                        <SizeButtons sizeKey={p.slot} sizes={sizes} onPick={setSize} />
-                      </div>
-                      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 12 }}>
-                        <button
-                          type="button"
-                          className="btn-primary-dark"
-                          onClick={() => addNewIn(p)}
-                          style={{
-                            cursor: 'pointer',
-                            background: '#141414',
-                            color: '#fff',
-                            border: 'none',
-                            padding: '15px 26px',
-                            fontSize: 11,
-                            letterSpacing: '0.18em',
-                            textTransform: 'uppercase',
-                          }}
-                        >
-                          Add to cart
-                        </button>
-                        <a
-                          href={waProduct}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn-outline-dark"
-                          style={{
-                            border: '1px solid rgba(20,20,20,0.25)',
-                            color: '#141414',
-                            padding: '15px 26px',
-                            fontSize: 11,
-                            letterSpacing: '0.18em',
-                            textTransform: 'uppercase',
-                          }}
-                        >
-                          Order on WhatsApp
-                        </a>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
+                    Add to cart
+                  </button>
+                  <a
+                    href={waLink(
+                      `Hi TEÁH Studios! I would like to order the ${newInItem.name} - Colour: ${newInItem.color} - Size: ${newInSize} - Price: ${newInItem.price}. Please send me the payment details.`,
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-outline-dark"
+                    style={{
+                      border: '1px solid rgba(20,20,20,0.25)',
+                      color: '#141414',
+                      padding: '15px 26px',
+                      fontSize: 11,
+                      letterSpacing: '0.18em',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    Order on WhatsApp
+                  </a>
+                </div>
+              </div>
+            </article>
           </div>
         </div>
 
