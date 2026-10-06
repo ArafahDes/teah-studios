@@ -4,6 +4,7 @@ import { img } from './data/images.js';
 const WHATSAPP_NUMBER = '+2348130987906';
 const FEATURED_NAME = 'TEÁH Hobo Crescent Bag';
 const FEATURED_PRICES = { S: 'NGN 18,000', M: 'NGN 25,000', L: 'NGN 33,000' };
+const NEW_IN_PRICES = { S: 'NGN 20,000', M: 'NGN 28,500', L: 'NGN 35,000' };
 const SIZE_LIST = ['S', 'M', 'L'];
 
 const PALETTE = [
@@ -40,14 +41,12 @@ const NEW_IN = [
     slot: 'roxie',
     name: 'TEÁH Roxie',
     desc: 'A rich red hobo bag designed to add a bold touch to your everyday look. Finished with delicate gold eyelet details and our signature relaxed, slouchy silhouette.',
-    price: 'NGN 30,000',
     color: 'Roxie Red',
   },
   {
     slot: 'soleil',
     name: 'TEÁH Soleil',
     desc: 'A warm mustard hobo bag made for days when you want your everyday carry to make a statement. Finished with gold eyelet details and our signature soft, slouchy silhouette.',
-    price: 'NGN 30,000',
     color: 'Soleil Mustard',
   },
 ];
@@ -191,6 +190,7 @@ export default function App() {
   const newInIdx = Math.min(picks['new-in'] ?? 0, NEW_IN.length - 1);
   const newInItem = NEW_IN[newInIdx];
   const newInSize = sizeOf('new-in');
+  const newInPrice = NEW_IN_PRICES[newInSize] ?? NEW_IN_PRICES.M;
 
   const cartMsg = cart.length
     ? `Hi TEÁH Studios! I would like to order:\n${cart
@@ -251,8 +251,8 @@ export default function App() {
       {
         name: item.name,
         color: item.color,
-        size: sizeOf('new-in'),
-        price: item.price,
+        size: newInSize,
+        price: newInPrice,
       },
     ]);
   };
@@ -716,7 +716,7 @@ export default function App() {
                     color: '#6E1B2F',
                   }}
                 >
-                  {newInItem.price}
+                  {newInPrice}
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 6 }}>
                   <span style={{ fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(20,20,20,0.5)' }}>
@@ -757,7 +757,7 @@ export default function App() {
                   </button>
                   <a
                     href={waLink(
-                      `Hi TEÁH Studios! I would like to order the ${newInItem.name} - Colour: ${newInItem.color} - Size: ${newInSize} - Price: ${newInItem.price}. Please send me the payment details.`,
+                      `Hi TEÁH Studios! I would like to order the ${newInItem.name} - Colour: ${newInItem.color} - Size: ${newInSize} - Price: ${newInPrice}. Please send me the payment details.`,
                     )}
                     target="_blank"
                     rel="noopener noreferrer"
