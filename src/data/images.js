@@ -3,6 +3,7 @@ export const IMAGES = {
   'f-wine': '/images/f-wine.webp',
   'f-black': '/images/f-black.webp',
   'f-cognac': '/images/f-cognac.webp',
+  'f-leopard': '/images/f-leopard.webp',
   hero: '/images/hero.webp',
   'p2-cognac': '/images/p2-cognac.webp',
   'p2-bone': '/images/p2-bone.webp',
