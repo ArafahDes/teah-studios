@@ -8,7 +8,6 @@ const NEW_IN_PRICES = { S: 'NGN 20,000', M: 'NGN 28,500', L: 'NGN 35,000' };
 const SIZE_LIST = ['S', 'M', 'L'];
 
 const PALETTE = [
-  { name: 'Leopard', hex: '#8A5A34', slot: 'f-leopard' },
   { name: 'Wine', hex: '#6E1B2F', slot: 'f-wine' },
   { name: 'Black', hex: '#141414', slot: 'f-black' },
   { name: 'Bone', hex: '#EFE7DF', slot: 'f-bone' },
@@ -466,7 +465,7 @@ export default function App() {
             TEÁH Hobo Crescent Bag
           </h3>
           <p style={{ margin: 0, maxWidth: 560, fontSize: 15.5, lineHeight: 1.7, color: 'rgba(20,20,20,0.66)', fontWeight: 300 }}>
-            Offered plain or with a hand-set lace panel, in four house colours — plus a special leopard print.
+            Offered plain or with a hand-set lace panel, in four house colours.
           </p>
         </div>
 
@@ -494,31 +493,10 @@ export default function App() {
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
                 pointerEvents: 'none',
-                zIndex: 2,
               }}
             >
               Bestseller
             </span>
-            {fIdx === 0 && (
-              <span
-                style={{
-                  position: 'absolute',
-                  top: 26,
-                  right: 26,
-                  background: '#C9A227',
-                  color: '#141414',
-                  padding: '9px 15px',
-                  fontSize: 10.5,
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
-                  fontWeight: 600,
-                  pointerEvents: 'none',
-                  zIndex: 2,
-                }}
-              >
-                Special
-              </span>
-            )}
             <button
               type="button"
               aria-label="Previous colour"
