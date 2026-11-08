@@ -1,3 +1,9 @@
 node_modules
 dist
 .DS_Store
+.env
+.dev.vars
+.wrangler
+transcribe/.env
+transcribe/node_modules
+server/data/bespoke-slots.json

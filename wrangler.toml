@@ -1,0 +1,8 @@
+name = "teah-studios"
+compatibility_date = "2024-11-12"
+pages_build_output_dir = "dist"
+
+[[kv_namespaces]]
+binding = "BESPOKE_SLOTS"
+id = "1cb9c8692a554d16bef295c89bc21fef"
+preview_id = "285e5dff82e14298ae8ac78ec0828e6f"

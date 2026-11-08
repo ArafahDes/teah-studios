@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { claimBespokeSlot, fetchBespokeSlots, hasClaimedThisMonth } from './api/bespokeSlots.js';
 import { img } from './data/images.js';
 
 const WHATSAPP_NUMBER = '+2348130987906';
@@ -165,6 +166,17 @@ export default function App() {
   const [picks, setPicks] = useState({});
   const [sizes, setSizes] = useState({});
   const [cart, setCart] = useState([]);
+  const [bespoke, setBespoke] = useState({
+    month: '',
+    max: 4,
+    claimed: 0,
+    remaining: 4,
+    full: false,
+    message: '4 slots left this month',
+  });
+  const [bespokeBusy, setBespokeBusy] = useState(false);
+  const [bespokeError, setBespokeError] = useState('');
+  const [alreadyClaimed, setAlreadyClaimed] = useState(false);
 
   const idxFor = useCallback((key) => picks[key] ?? index, [picks, index]);
   const pick = useCallback(
@@ -182,6 +194,23 @@ export default function App() {
       setIndex((s) => (s + 1) % PALETTE.length);
     }, 5000);
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+    fetchBespokeSlots()
+      .then((data) => {
+        if (!alive) return;
+        setBespoke(data);
+        setAlreadyClaimed(hasClaimedThisMonth(data.month));
+      })
+      .catch(() => {
+        if (!alive) return;
+        setBespokeError('Slot tracker unavailable right now.');
+      });
+    return () => {
+      alive = false;
+    };
   }, []);
 
   const fIdx = idxFor('featured');
@@ -219,6 +248,28 @@ export default function App() {
     }),
     [activeColor.name, cartMsg, featuredSize, featuredPrice],
   );
+
+  const claimSlot = useCallback(async () => {
+    if (bespokeBusy || bespoke.full) return;
+    if (alreadyClaimed) {
+      window.open(links.waSale, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    setBespokeBusy(true);
+    setBespokeError('');
+    try {
+      const data = await claimBespokeSlot();
+      setBespoke(data);
+      if (data.ok || data.alreadyClaimed) {
+        setAlreadyClaimed(true);
+        window.open(links.waSale, '_blank', 'noopener,noreferrer');
+      }
+    } catch {
+      setBespokeError('Could not claim a slot. Please try again.');
+    } finally {
+      setBespokeBusy(false);
+    }
+  }, [alreadyClaimed, bespokeBusy, bespoke.full, links.waSale]);
 
   const addFeatured = () =>
     setCart((s) => [
@@ -1129,29 +1180,76 @@ export default function App() {
             Up to 20% off
           </h2>
           <p style={{ margin: 0, fontSize: 16.5, lineHeight: 1.7, color: 'rgba(255,255,255,0.78)', fontWeight: 300 }}>
-            Book a custom hobo this month and the personalisation (lace panel, monogram, lining colour) comes included. Slots are limited to keep every bag hand-finished.
+            Book a custom hobo this month and the personalisation (lace panel, monogram, lining colour) comes included. Only 4 slots each month to keep every bag hand-finished.
           </p>
-          <a
-            href={links.waSale}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-offer"
+          <p
             style={{
-              alignSelf: 'flex-start',
-              marginTop: 10,
-              background: '#fff',
-              color: '#6E1B2F',
-              padding: '16px 34px',
-              fontSize: 12,
-              letterSpacing: '0.18em',
+              margin: 0,
+              fontSize: 13,
+              letterSpacing: '0.16em',
               textTransform: 'uppercase',
+              color: bespoke.full ? '#C9A227' : 'rgba(255,255,255,0.85)',
+              fontWeight: 500,
             }}
           >
-            Claim your slot
-          </a>
-          <p style={{ margin: '6px 0 0', fontSize: 12.5, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.5)' }}>
-            Payment details are sent on WhatsApp once your order is confirmed.
+            {bespoke.full
+              ? 'Slots occupied for the month'
+              : `${bespoke.remaining} of ${bespoke.max} slots left`}
           </p>
+          {bespoke.full ? (
+            <button
+              type="button"
+              disabled
+              style={{
+                alignSelf: 'flex-start',
+                marginTop: 10,
+                background: 'rgba(255,255,255,0.2)',
+                color: 'rgba(255,255,255,0.75)',
+                border: '1px solid rgba(255,255,255,0.25)',
+                padding: '16px 34px',
+                fontSize: 12,
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                cursor: 'not-allowed',
+              }}
+            >
+              Slots occupied for the month
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn-offer"
+              onClick={claimSlot}
+              disabled={bespokeBusy}
+              style={{
+                alignSelf: 'flex-start',
+                marginTop: 10,
+                background: '#fff',
+                color: '#6E1B2F',
+                border: 'none',
+                padding: '16px 34px',
+                fontSize: 12,
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                cursor: bespokeBusy ? 'wait' : 'pointer',
+                opacity: bespokeBusy ? 0.75 : 1,
+              }}
+            >
+              {bespokeBusy
+                ? 'Reserving…'
+                : alreadyClaimed
+                  ? 'Open WhatsApp'
+                  : 'Claim your slot'}
+            </button>
+          )}
+          <p style={{ margin: '6px 0 0', fontSize: 12.5, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.5)' }}>
+            {bespoke.full
+              ? 'All 4 Bespoke Season slots are taken this month. Check back next month.'
+              : 'Payment details are sent on WhatsApp once your order is confirmed.'}
+          </p>
+          {bespokeError && (
+            <p style={{ margin: 0, fontSize: 12.5, color: '#F4C7C3' }}>{bespokeError}</p>
+          )}
         </div>
         <div
           style={{
