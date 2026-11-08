@@ -27,6 +27,7 @@ const PRODUCTS = [
     desc: 'A low, wide shoulder shape that sits close and keeps the look sharp.',
     price: 'NGN 35,000',
     hasSizes: false,
+    soldOut: true,
   },
   {
     slot: 'p5',
@@ -836,6 +837,25 @@ export default function App() {
                         placeholderPrefix={p.name}
                         alignRight={p.slot === 'p4'}
                       />
+                      {p.soldOut && (
+                        <span
+                          style={{
+                            position: 'absolute',
+                            top: 26,
+                            left: 26,
+                            zIndex: 2,
+                            background: '#141414',
+                            color: '#fff',
+                            padding: '9px 15px',
+                            fontSize: 10.5,
+                            letterSpacing: '0.2em',
+                            textTransform: 'uppercase',
+                            pointerEvents: 'none',
+                          }}
+                        >
+                          Sold out
+                        </span>
+                      )}
                     </div>
                     <div
                       style={{
@@ -858,6 +878,19 @@ export default function App() {
                       >
                         {p.name}
                       </h4>
+                      {p.soldOut && (
+                        <span
+                          style={{
+                            fontSize: 12,
+                            letterSpacing: '0.18em',
+                            textTransform: 'uppercase',
+                            fontWeight: 600,
+                            color: '#141414',
+                          }}
+                        >
+                          Sold out
+                        </span>
+                      )}
                       {p.price && (
                         <p
                           style={{
@@ -867,6 +900,7 @@ export default function App() {
                             textTransform: 'uppercase',
                             fontWeight: 500,
                             color: '#6E1B2F',
+                            opacity: p.soldOut ? 0.55 : 1,
                           }}
                         >
                           {p.price}
@@ -895,39 +929,60 @@ export default function App() {
                         </div>
                       )}
                       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 12 }}>
-                        <button
-                          type="button"
-                          className="btn-primary-dark"
-                          onClick={() => addProduct(p)}
-                          style={{
-                            cursor: 'pointer',
-                            background: '#141414',
-                            color: '#fff',
-                            border: 'none',
-                            padding: '15px 26px',
-                            fontSize: 11,
-                            letterSpacing: '0.18em',
-                            textTransform: 'uppercase',
-                          }}
-                        >
-                          Add to cart
-                        </button>
-                        <a
-                          href={waProduct}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn-outline-dark"
-                          style={{
-                            border: '1px solid rgba(20,20,20,0.25)',
-                            color: '#141414',
-                            padding: '15px 26px',
-                            fontSize: 11,
-                            letterSpacing: '0.18em',
-                            textTransform: 'uppercase',
-                          }}
-                        >
-                          Order on WhatsApp
-                        </a>
+                        {p.soldOut ? (
+                          <button
+                            type="button"
+                            disabled
+                            style={{
+                              cursor: 'not-allowed',
+                              background: 'rgba(20,20,20,0.35)',
+                              color: '#fff',
+                              border: 'none',
+                              padding: '15px 26px',
+                              fontSize: 11,
+                              letterSpacing: '0.18em',
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            Sold out
+                          </button>
+                        ) : (
+                          <>
+                            <button
+                              type="button"
+                              className="btn-primary-dark"
+                              onClick={() => addProduct(p)}
+                              style={{
+                                cursor: 'pointer',
+                                background: '#141414',
+                                color: '#fff',
+                                border: 'none',
+                                padding: '15px 26px',
+                                fontSize: 11,
+                                letterSpacing: '0.18em',
+                                textTransform: 'uppercase',
+                              }}
+                            >
+                              Add to cart
+                            </button>
+                            <a
+                              href={waProduct}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn-outline-dark"
+                              style={{
+                                border: '1px solid rgba(20,20,20,0.25)',
+                                color: '#141414',
+                                padding: '15px 26px',
+                                fontSize: 11,
+                                letterSpacing: '0.18em',
+                                textTransform: 'uppercase',
+                              }}
+                            >
+                              Order on WhatsApp
+                            </a>
+                          </>
+                        )}
                       </div>
                     </div>
                   </article>
